@@ -23,7 +23,7 @@ module Rails3JQueryAutocomplete
 
         scopes.each { |scope| items = items.send(scope) } unless scopes.empty?
 
-        items = items.select(get_autocomplete_select_clause(model, method, options)) unless options[:full_model]
+        items = items.select(get_autocomplete_select_clause(model)) unless options[:full_model]
         items = items.where(get_autocomplete_where_clause(model, term, method, options)).
             limit(limit).order(order)
         items = items.where(where) unless where.blank?
@@ -31,9 +31,8 @@ module Rails3JQueryAutocomplete
         items
       end
 
-      def get_autocomplete_select_clause(model, method, options)
-        table_name = model.table_name
-        (["#{table_name}.#{model.primary_key}", "#{table_name}.#{method}"] + (options[:extra_data].blank? ? [] : options[:extra_data]))
+      def get_autocomplete_select_clause(model)
+        (["#{model.table_name}.*"])
       end
 
       def get_autocomplete_where_clause(model, term, method, options)
